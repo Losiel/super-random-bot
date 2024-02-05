@@ -266,6 +266,44 @@ must exist in order for the bot to run")))
         :reference {:message message
                     :mention false}}))
 
+(var *LAST-R34-POST-ID* nil)
+(define-command :-34 [message]
+  "You know what it does."
+  (when (not= (type *LAST-R34-POST-ID*) :number)
+    (set *LAST-R34-POST-ID*
+         (case-try
+             (coro.request :GET 
+                           "https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&pid=1&limit=1&json=1")
+           ({:code 200} body) (json.decode body)
+           [{:id id}] id
+           (catch ? nil))))
+  (local is-channel-nsfw? message.channel.nsfw)
+  (local (tags score image-url id)
+         (case-try (values is-channel-nsfw? *LAST-R34-POST-ID*)
+           (true last-post)
+           (coro.request :GET
+                         (.. "https://api.rule34.xxx/index.php?page=dapi&s=post&q=index&json=1&id="
+                             (math.random 1 last-post)))
+           ({:code 200} body) (json.decode body)
+           [{: tags : score : file_url : id}] (values tags score
+                                                      file_url id)
+           (catch ? nil)))
+  (message:reply
+   {:reference {:message message
+                :mention false}
+    :embed
+    (if tags
+        {:description
+         (.. "[Link to image](https://rule34.xxx/index.php?page=post&s=view&id="
+             id ")\n" tags)
+         :image {:url image-url}
+         :footer {:text (.. "Score: " score)}}
+        (not is-channel-nsfw?)
+        {:title ":warning: Channel is not marked as NSFW"
+         :color (. (discordia.Color.fromRGB 255 80 0) :value)}
+        {:title "Couldn't get an image from rule34.xxx"
+         :color (. (discordia.Color.fromRGB 255 80 0) :value)})}))
+
 (define-command :help [message]
   "Shows you this help"
   (message:reply

@@ -4,6 +4,7 @@
 This Discord bot is dedicated to crawling the internet for random content, as of right now the bot can:
 - show a random Roblox game
 - show a Roblox ad
+- show a random rule34 image
 
 ![https://imgur.com/d2gAEMm.png](https://imgur.com/d2gAEMm.png)
 
