@@ -5,6 +5,8 @@ This Discord bot is dedicated to crawling the internet for random content, as of
 - show a random Roblox game
 - show a Roblox ad
 
+![https://imgur.com/d2gAEMm.png](https://imgur.com/d2gAEMm.png)
+
 # Reporting errors
 Join [the Discord server](https://discord.gg/82Er5KQxPk) if you have any errors. My Discord username is `alonzon`.
 
